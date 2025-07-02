@@ -1,14 +1,7 @@
 fileFormatVersion: 2
-guid: 12ea578b957aced42ae977b9c24f81c5
+guid: db9badd2f2c163a428bc6893b26596b3
 PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 188270
-  packageName: Abandoned Psychiatric Hospital
-  packageVersion: 1.3
-  assetPath: Assets/Abandoned_Psychiatric_Hospitals/Prefabs/Hospital.prefab
-  uploadId: 661847
