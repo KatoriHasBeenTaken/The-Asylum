@@ -21,9 +21,9 @@ public class GhostTrigger : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Ghost"))
+        if (other.CompareTag("ghost"))
         {
-            Debug.Log("Player ?ã r?i kh?i ma!");
+            Debug.Log("Player khi gap ma!");
             cameraEffects.ResetZoom();
         }
     }
