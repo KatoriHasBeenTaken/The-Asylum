@@ -1,28 +1,39 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Speed Settings")]
     public float walkSpeed = 3f;
     public float runSpeed = 6f;
-    public float stamina = 100f;
+    public float crouchSpeed = 1.5f;
+
+    [Header("Stamina")]
     public float maxStamina = 100f;
-    public float staminaDrain = 20f;
-    public float staminaRegen = 10f;
+    public float staminaDrainRun = 20f;  // /s
+    public float staminaRegen = 10f;  // /s
 
-    public Slider staminaSlider;
+    [Header("Crouch")]
+    public float crouchHeight = 1f;
+    public float standHeight = 2f;
 
-    private CharacterController controller;
-    private bool isRunning;
-    private float currentSpeed;
+    [Header("References")]
+    public UnityEngine.UI.Slider staminaSlider;   // gán Slider n?u có
 
-    private Vector3 velocity;
-    private float gravity = -9.81f;
+    // ????????????????????????????????????????????????
+    CharacterController controller;
+    Vector3 velocity;
+    float stamina;
+    bool isCrouching;
+    bool isRunning;
 
-    void Start()
+    const float gravity = -9.81f;
+
+    void Awake()
     {
         controller = GetComponent<CharacterController>();
+        stamina = maxStamina;
+
         if (staminaSlider != null)
         {
             staminaSlider.maxValue = maxStamina;
@@ -34,49 +45,66 @@ public class PlayerMovement : MonoBehaviour
     {
         HandleMovement();
         HandleStamina();
-        UpdateStaminaUI();
+        UpdateUI();
     }
 
+    // ????????????????????????????????????????????????
+    #region Movement
     void HandleMovement()
     {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
+
+        /* Toggle crouch b?ng phím Space */
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            isCrouching = !isCrouching;
+            controller.height = isCrouching ? crouchHeight : standHeight;
+        }
+
+        /* Ch?y khi Shift + ð? stamina + không crouch */
+        bool wantsRun = Input.GetKey(KeyCode.LeftShift) &&
+                        z > 0.1f &&
+                        !isCrouching &&
+                        stamina > 0f;
+
+        isRunning = wantsRun;
+
+        float currentSpeed = isCrouching ? crouchSpeed :
+                             (isRunning ? runSpeed : walkSpeed);
+
         Vector3 move = transform.right * x + transform.forward * z;
+        controller.Move(move.normalized * currentSpeed * Time.deltaTime);
 
-        bool canRun = Input.GetKey(KeyCode.LeftShift) && stamina > 0f && z > 0f;
-        currentSpeed = canRun ? runSpeed : walkSpeed;
-        isRunning = canRun;
+        /* Gravity gi? player bám ð?t */
+        if (controller.isGrounded && velocity.y < 0)
+            velocity.y = -2f;
 
-        controller.Move(move * currentSpeed * Time.deltaTime);
-
-        if (!controller.isGrounded)
-        {
-            velocity.y += gravity * Time.deltaTime;
-            controller.Move(velocity * Time.deltaTime);
-        }
-        else
-        {
-            velocity.y = -1f;
-        }
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
     }
+    #endregion
 
+    // ????????????????????????????????????????????????
+    #region Stamina
     void HandleStamina()
     {
         if (isRunning)
-        {
-            stamina -= staminaDrain * Time.deltaTime;
-        }
+            stamina -= staminaDrainRun * Time.deltaTime;
         else
-        {
             stamina += staminaRegen * Time.deltaTime;
-        }
 
         stamina = Mathf.Clamp(stamina, 0f, maxStamina);
+        if (stamina <= 0f) isRunning = false;   // h?t stamina th? d?ng ch?y
     }
+    #endregion
 
-    void UpdateStaminaUI()
+    // ????????????????????????????????????????????????
+    #region UI
+    void UpdateUI()
     {
         if (staminaSlider != null)
             staminaSlider.value = stamina;
     }
+    #endregion
 }

@@ -39945,6 +39945,7 @@ GameObject:
   - component: {fileID: 540395618}
   - component: {fileID: 540395619}
   - component: {fileID: 540395620}
+  - component: {fileID: 540395621}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -40082,7 +40083,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe50f5a9deaa6914099640a37fae091a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 100
+  mouseSensitivity: 50
   playerBody: {fileID: 2002615400}
 --- !u!114 &540395619
 MonoBehaviour:
@@ -40113,6 +40114,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19f7f415257e45040a28d55e0831b2c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &540395621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540395613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3b776751b8ebe46b679b85d50f8596, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 0}
+  walkBobSpeed: 10
+  walkBobAmount: 0.05
+  runBobSpeed: 13
+  runBobAmount: 0.08
+  crouchBobAmount: 0.02
+  tiltAmount: 5
+  tiltSpeed: 5
 --- !u!1001 &540505471
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -156068,10 +156089,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 3
   runSpeed: 6
-  stamina: 100
+  crouchSpeed: 1.5
   maxStamina: 100
-  staminaDrain: 20
+  staminaDrainRun: 20
   staminaRegen: 10
+  crouchHeight: 1
+  standHeight: 2
   staminaSlider: {fileID: 2110138181}
 --- !u!136 &2002615397
 CapsuleCollider:
