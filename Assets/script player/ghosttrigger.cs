@@ -14,7 +14,7 @@ public class GhostTrigger : MonoBehaviour
     {
         if (other.CompareTag("ghost"))
         {
-            Debug.Log("Player ?ã g?p ma!");
+            Debug.Log("Player gap ma !");
             cameraEffects.ZoomIn();
         }
     }
