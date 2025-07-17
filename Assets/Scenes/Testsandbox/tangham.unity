@@ -40130,7 +40130,7 @@ MonoBehaviour:
   walkBobSpeed: 10
   walkBobAmount: 0.05
   runBobSpeed: 13
-  runBobAmount: 0.08
+  runBobAmount: 1
   crouchBobAmount: 0.02
   tiltAmount: 5
   tiltSpeed: 5
@@ -156089,7 +156089,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 3
   runSpeed: 6
-  crouchSpeed: 1.5
+  crouchSpeed: 2
   maxStamina: 100
   staminaDrainRun: 20
   staminaRegen: 10
@@ -156201,7 +156201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 540395615}
-  normalFOV: 60
+  normalFOV: 100
   zoomInFOV: 40
   zoomOutFOV: 80
   transitionSpeed: 5

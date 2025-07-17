@@ -1,27 +1,24 @@
 using UnityEngine;
 
-/// <summary>
-/// L?c camera (bobbing) + nghiêng (tilt) cho FPS.
-/// G?n script vào Main?Camera, kéo CharacterController c?a player vào ô Controller.
-/// </summary>
+
 public class CameraBobbing : MonoBehaviour
 {
     [Header("References")]
-    public CharacterController controller;          // gán CharacterController c?a player
+    public CharacterController controller;         
 
-    [Header("Bobbing ? lên/xu?ng")]
+    [Header("Bobbing ? len / xuong")]
     public float walkBobSpeed = 8f;
     public float walkBobAmount = 0.05f;
     public float runBobSpeed = 13f;
     public float runBobAmount = 0.08f;
     public float crouchBobAmount = 0.02f;
 
-    [Header("Tilt ? nghiêng trái/ph?i")]
-    public float tiltAmount = 2f;    // ð? nghiêng t?i ða (ð?)
-    public float tiltSpeed = 6f;    // t?c ð? nghiêng
+    [Header("Nghieng trai phai")]
+    public float tiltAmount = 2f;    
+    public float tiltSpeed = 8f;    
 
-    Vector3 localOrigin;         // v? trí g?c
-    Quaternion rotOrigin;        // rotation g?c
+    Vector3 localOrigin;         
+    Quaternion rotOrigin;        
     float bobTimer;
 
     void Awake()
@@ -29,12 +26,12 @@ public class CameraBobbing : MonoBehaviour
         localOrigin = transform.localPosition;
         rotOrigin = transform.localRotation;
 
-        // T? t?m CharacterController n?u quên gán
+        
         if (controller == null)
         {
             controller = GetComponentInParent<CharacterController>();
             if (controller == null)
-                Debug.LogWarning("CameraBobbing: Không t?m th?y CharacterController!");
+                Debug.LogWarning("CameraBobbing: Khong tim thay CharacterController!");
         }
     }
 
@@ -47,10 +44,8 @@ public class CameraBobbing : MonoBehaviour
         bool isGround = controller.isGrounded;
         bool isMoving = velocity.magnitude > 0.1f && isGround;
 
-        /* 1. BOBBING (l?c Y) */
         if (isMoving)
         {
-            // Ch?n t?c ð? & biên ð? d?a trên t?c ch?y
             float bobSpeed = (velocity.z > controller.height) ? runBobSpeed : walkBobSpeed;
             float bobAmount = (velocity.z > controller.height) ? runBobAmount : walkBobAmount;
             if (controller.height < 1.5f) bobAmount = crouchBobAmount;
@@ -70,8 +65,7 @@ public class CameraBobbing : MonoBehaviour
                                                     Time.deltaTime * walkBobSpeed);
         }
 
-        /* 2. TILT (nghiêng Z) */
-        float targetTilt = -velocity.x * tiltAmount;            // âm = nghiêng ph?i, dýõng = nghiêng trái
+        float targetTilt = -velocity.x * tiltAmount;           
         Quaternion tiltRot = Quaternion.Euler(0f, 0f, targetTilt);
 
         transform.localRotation = Quaternion.Slerp(transform.localRotation,
