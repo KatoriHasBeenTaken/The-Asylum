@@ -23,7 +23,7 @@ public class GhostTrigger : MonoBehaviour
     {
         if (other.CompareTag("ghost"))
         {
-            Debug.Log("Player khi gap ma!");
+            Debug.Log("Player di binh thuong!");
             cameraEffects.ResetZoom();
         }
     }
