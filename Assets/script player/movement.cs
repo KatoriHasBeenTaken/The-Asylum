@@ -10,17 +10,16 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Stamina")]
     public float maxStamina = 100f;
-    public float staminaDrainRun = 20f;  // /s
-    public float staminaRegen = 10f;  // /s
+    public float staminaDrainRun = 20f;  
+    public float staminaRegen = 10f; 
 
     [Header("Crouch")]
     public float crouchHeight = 1f;
     public float standHeight = 2f;
 
     [Header("References")]
-    public UnityEngine.UI.Slider staminaSlider;   // gán Slider n?u có
+    public UnityEngine.UI.Slider staminaSlider;   // gán Slider 
 
-    // ????????????????????????????????????????????????
     CharacterController controller;
     Vector3 velocity;
     float stamina;
@@ -48,21 +47,20 @@ public class PlayerMovement : MonoBehaviour
         UpdateUI();
     }
 
-    // ????????????????????????????????????????????????
     #region Movement
     void HandleMovement()
     {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        /* Toggle crouch b?ng phím Space */
+        /* Toggle crouch bang phím Space */
         if (Input.GetKeyDown(KeyCode.Space))
         {
             isCrouching = !isCrouching;
             controller.height = isCrouching ? crouchHeight : standHeight;
         }
 
-        /* Ch?y khi Shift + ð? stamina + không crouch */
+        /*Chay khi Shift +  stamina + không crouch */
         bool wantsRun = Input.GetKey(KeyCode.LeftShift) &&
                         z > 0.1f &&
                         !isCrouching &&
@@ -76,7 +74,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 move = transform.right * x + transform.forward * z;
         controller.Move(move.normalized * currentSpeed * Time.deltaTime);
 
-        /* Gravity gi? player bám ð?t */
         if (controller.isGrounded && velocity.y < 0)
             velocity.y = -2f;
 
@@ -85,7 +82,6 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
-    // ????????????????????????????????????????????????
     #region Stamina
     void HandleStamina()
     {
@@ -95,11 +91,11 @@ public class PlayerMovement : MonoBehaviour
             stamina += staminaRegen * Time.deltaTime;
 
         stamina = Mathf.Clamp(stamina, 0f, maxStamina);
-        if (stamina <= 0f) isRunning = false;   // h?t stamina th? d?ng ch?y
+        if (stamina <= 0f) isRunning = false;   // het stamina khi dang chay 
     }
     #endregion
 
-    // ????????????????????????????????????????????????
+    
     #region UI
     void UpdateUI()
     {
