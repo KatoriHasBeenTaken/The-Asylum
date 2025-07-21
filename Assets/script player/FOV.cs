@@ -5,15 +5,15 @@ public class CameraEffects : MonoBehaviour
     [Header("Camera Settings")]
     public Camera cam;
     public float normalFOV = 60f;
-    public float zoomInFOV = 40f;    // Khi nhìn th?y ma
-    public float zoomOutFOV = 80f;   // Khi b? ?u?i
+    public float zoomInFOV = 40f;    // Khi nhin thay ma
+    public float zoomOutFOV = 80f;   // Khi bi duoi
     public float transitionSpeed = 5f;
 
     private float targetFOV;
 
     void Start()
     {
-        // Gán Camera n?u ch?a thi?t l?p s?n
+        // Gán Camera 
         if (cam == null)
             cam = GetComponent<Camera>();
 
@@ -22,29 +22,29 @@ public class CameraEffects : MonoBehaviour
 
     void Update()
     {
-        // Làm m??t FOV khi thay ??i
+        // zoom FOV khi phat hien
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFOV, Time.deltaTime * transitionSpeed);
     }
 
-    // G?i khi nhìn th?y ma
+    
     public void ZoomIn()
     {
         targetFOV = zoomInFOV;
     }
 
-    // G?i khi b? r??t
+    // khi bi ruot
     public void ZoomOut()
     {
         targetFOV = zoomOutFOV;
     }
 
-    // G?i khi ?ã an toàn ho?c tr? l?i bình th??ng
+    
     public void ResetZoom()
     {
         targetFOV = normalFOV;
     }
 
-    // (Tùy ch?n) Test nhanh b?ng phím b?m
+    
     void DebugKeyTest()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)) ZoomIn();

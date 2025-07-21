@@ -14,16 +14,16 @@ public class GhostTrigger : MonoBehaviour
     {
         if (other.CompareTag("ghost"))
         {
-            Debug.Log("Player ?ã g?p ma!");
+            Debug.Log("Player gap ma !");
             cameraEffects.ZoomIn();
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Ghost"))
+        if (other.CompareTag("ghost"))
         {
-            Debug.Log("Player ?ã r?i kh?i ma!");
+            Debug.Log("Player di binh thuong!");
             cameraEffects.ResetZoom();
         }
     }
