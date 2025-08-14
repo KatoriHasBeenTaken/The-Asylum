@@ -5,9 +5,10 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 5f;
     public float runSpeed = 8f;
     public float mouseSensitivity = 100f;
+    public Animator animator;
 
     [Header("Head Bobbing Settings")]
-    public Transform cameraTransform; // Assign the player's camera in Inspector
+    public Transform cameraTransform;
     public float walkBobFrequency = 4f;
     public float walkBobAmplitude = 0.1f;
     public float runBobFrequency = 7f;
@@ -30,8 +31,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        HandleMouseLook();
         HandleMovement();
+        HandleMouseLook();
         HandleHeadBob();
     }
 
@@ -52,13 +53,16 @@ public class PlayerMovement : MonoBehaviour
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
         float currentSpeed = isRunning ? runSpeed : moveSpeed;
 
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveZ = Input.GetAxisRaw("Vertical");
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
         controller.Move(move * currentSpeed * Time.deltaTime);
-    }
 
+        bool isMoving = move.sqrMagnitude > 0f;
+        animator.SetBool("isWalking", isMoving);
+    }
+    
     void HandleHeadBob()
     {
         Vector3 velocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
@@ -69,13 +73,24 @@ public class PlayerMovement : MonoBehaviour
             float amplitude = isRunning ? runBobAmplitude : walkBobAmplitude;
 
             bobTimer += Time.deltaTime * frequency;
-            float bobOffset = Mathf.Sin(bobTimer) * amplitude;
-            cameraTransform.localPosition = cameraInitialPosition + new Vector3(0, bobOffset, 0);
+
+            // Up and down bob
+            float bobOffsetY = Mathf.Sin(bobTimer) * amplitude;
+
+            // Left and right sway (phase-shifted so it feels natural)
+            float swayAmplitude = amplitude * 3f; // Smaller than Y bob
+            float bobOffsetX = Mathf.Cos(bobTimer * 0.5f) * swayAmplitude;
+
+            cameraTransform.localPosition = cameraInitialPosition + new Vector3(bobOffsetX, bobOffsetY, 0);
         }
         else // Idle
         {
             bobTimer = 0;
-            cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, cameraInitialPosition, Time.deltaTime * 5f);
+            cameraTransform.localPosition = Vector3.Lerp(
+                cameraTransform.localPosition,
+                cameraInitialPosition,
+                Time.deltaTime * 5f
+            );
         }
     }
 }
