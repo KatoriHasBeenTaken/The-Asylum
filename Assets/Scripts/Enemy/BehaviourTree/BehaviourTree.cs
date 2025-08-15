@@ -84,9 +84,13 @@ public class ChasePlayer : btNode
 {
     private Transform ai, player;
     private float speed;
-
-    public ChasePlayer(Transform ai, Transform player, float speed)
+    private Animator animator;
+    private string runTrigger;
+    private bool started = false;
+    public ChasePlayer(Transform ai, Transform player, float speed, string runTrigger = "run")
     {
+        this.animator = animator;
+        this.runTrigger = runTrigger;
         this.ai = ai;
         this.player = player;
         this.speed = speed;
