@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices.WindowsRuntime;
 using UniGLTF.SpringBoneJobs;
 using UnityEngine;
+using UnityEngine.AI;
 
 public enum StateNode
 {
@@ -82,54 +83,99 @@ public class CheckPlayerInRange : btNode
 }
 public class ChasePlayer : btNode
 {
-    private Transform ai, player;
-    private float speed;
+    private NavMeshAgent agent;
+    private Transform player;
     private Animator animator;
-    private string runTrigger;
-    private bool started = false;
-    public ChasePlayer(Transform ai, Transform player, float speed, string runTrigger = "run")
+    private int runHash;
+    private bool playedRunOnce = false;
+
+    private float repathInterval = 0.2f;
+    private float repathTimer = 0f;
+
+    // runAnimName: tên state/trigger bạn muốn phát (tuỳ controller)
+    public ChasePlayer(NavMeshAgent agent, Transform player, Animator animator = null, string runAnimName = "Run")
     {
-        this.animator = animator;
-        this.runTrigger = runTrigger;
-        this.ai = ai;
+        this.agent = agent;
         this.player = player;
-        this.speed = speed;
+        this.animator = animator;
+        this.runHash = Animator.StringToHash(runAnimName);
     }
 
     public override StateNode evaluate()
     {
-        ai.position = Vector3.MoveTowards(ai.position, player.position, speed * Time.deltaTime);
-        return StateNode.Running;
+        if (agent == null || player == null || !agent.enabled) return StateNode.Fail;
+
+        if (animator != null && !playedRunOnce)
+        {
+            // Nếu dùng Trigger: animator.SetTrigger(runHash);
+            // Nếu dùng state:   animator.Play(runHash);
+            animator.Play(runHash);
+            playedRunOnce = true;
+        }
+
+        repathTimer -= Time.deltaTime;
+        if (repathTimer <= 0f)
+        {
+            if (NavMesh.SamplePosition(player.position, out var hit, 2.0f, NavMesh.AllAreas))
+                agent.SetDestination(hit.position);
+            repathTimer = repathInterval;
+        }
+
+        if (agent.pathPending) return StateNode.Running;
+        if (agent.remainingDistance > agent.stoppingDistance) return StateNode.Running;
+
+        return StateNode.Sucess; // đã áp sát
     }
 }
+
+// PATROL bằng NavMeshAgent
 public class Patrol : btNode
 {
-    private Transform ai;
+    private NavMeshAgent agent;
     private Transform[] points;
-    private int index;
-    private float speed;
+    private int index = -1;
+    private bool started = false;
 
-    public Patrol(Transform ai, Transform[] points, float speed)
+    public Patrol(NavMeshAgent agent, Transform[] points)
     {
-        this.ai = ai;
-        this.points = points;
-        this.speed = speed;
-        index = 0;
+        this.agent = agent;
+        // Lọc null để tránh lỗi khi quên gán 1 waypoint
+        if (points != null)
+        {
+            var list = new System.Collections.Generic.List<Transform>();
+            foreach (var p in points) if (p != null) list.Add(p);
+            this.points = list.ToArray();
+        }
+        else this.points = System.Array.Empty<Transform>();
     }
 
     public override StateNode evaluate()
     {
-        Vector3[] positions = new Vector3[points.Length];
+        if (agent == null || !agent.enabled || points == null || points.Length == 0)
+            return StateNode.Fail;
 
-        for (int i = 0; i < points.Length; i++)
+        if (!started)
         {
-            positions[i] = points[i].position;
+            index = 0;
+            SetNext();
+            started = true;
+            return StateNode.Running;
         }
-        if (Vector3.Distance(ai.position, positions[index]) < 0.1f)
-            index = (index + 1) % positions.Length;
 
-        ai.position = Vector3.MoveTowards(ai.position, positions[index], speed * Time.deltaTime);
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            index = (index + 1) % points.Length;
+            SetNext();
+        }
+
         return StateNode.Running;
+    }
+
+    private void SetNext()
+    {
+        var target = points[index].position;
+        if (NavMesh.SamplePosition(target, out var hit, 2.0f, NavMesh.AllAreas))
+            agent.SetDestination(hit.position);
     }
 }
 public class CloseToPlayer : btNode

@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class AIControl : MonoBehaviour
 {
@@ -10,12 +11,21 @@ public class AIControl : MonoBehaviour
     public Transform[] patrolPoints;
     public Transform camera;
     private btNode root;
+    private NavMeshAgent agent;
+    private Animator anim;
+    void Awake()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        anim = GetComponent<Animator>();
 
+        if (agent == null)
+            Debug.LogError("Thiếu NavMeshAgent trên AI!");
+    }
     void Start()
     {
         var checkPlayer = new CheckPlayerInRange(transform, player, detectRange);
-        var chase = new ChasePlayer(transform, player, speed);
-        var patrol = new Patrol(transform, patrolPoints, speed);
+        var chase = new ChasePlayer(agent, player, anim, "Run");
+        var patrol = new Patrol(agent, patrolPoints);
         var closeToPlayer = new CloseToPlayer(transform, player, 1.5f);
         var jumpscare = new Jumpscare(
             GetComponent<Animator>(),
