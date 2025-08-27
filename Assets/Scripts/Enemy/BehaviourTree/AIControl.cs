@@ -25,7 +25,9 @@ public class AIControl : MonoBehaviour
     {
         var checkPlayer = new CheckPlayerInRange(transform, player, detectRange);
         var chase = new ChasePlayer(agent, player, anim, "Run");
-        var patrol = new Patrol(agent, patrolPoints);
+
+        var patrol = new Patrol(agent, patrolPoints, anim, "Walk", "Idle", 0, pauseAtWaypoint: true, 0.8f, 1.8f);
+
         var closeToPlayer = new CloseToPlayer(transform, player, 1.5f);
         var jumpscare = new Jumpscare(
             GetComponent<Animator>(),
@@ -43,6 +45,34 @@ public class AIControl : MonoBehaviour
         root = new selector(arraySelector);
 
     }
+    //void Start()
+    //{
+    //    float desiredRange = 1.6f; // khoảng cách dừng trước player (khớp với CloseToPlayer)
+
+    //    var checkPlayer = new CheckPlayerInRange(transform, player, detectRange);
+    //    var chase = new ChasePlayer(agent, player, anim, "Run", desiredRange);
+
+    //    var closeToPlayer = new CloseToPlayer(transform, player, desiredRange);
+
+    //    // camera fallback an toàn (nếu bạn đã gán sẵn biến camera thì vẫn ổn)
+    //    var cam = Camera.main != null ? Camera.main.transform : camera;
+
+    //    var jumpscare = new Jumpscare(
+    //        GetComponent<Animator>(),
+    //        transform,
+    //        cam,
+    //        "Jumpscare" // lưu ý: đây phải là TÊN STATE trong Animator của bạn
+    //    );
+
+    //    // Patrol có Walk/Idle như bạn đang dùng
+    //    var patrol = new Patrol(agent, patrolPoints, anim, "Walk", "Idle");
+
+    //    // Sequence engage: chỉ khi check thấy player → chase tới đúng khoảng → close → jumpscare
+    //    var engageSeq = new sequence(new btNode[] { checkPlayer, chase, closeToPlayer, jumpscare });
+
+    //    // Selector tổng: ưu tiên engage, nếu không thì patrol
+    //    root = new selector(new btNode[] { engageSeq, patrol });
+    //}
 
     void Update()
     {

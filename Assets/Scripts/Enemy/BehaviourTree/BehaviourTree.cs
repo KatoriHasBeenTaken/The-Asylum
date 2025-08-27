@@ -127,19 +127,53 @@ public class ChasePlayer : btNode
         return StateNode.Sucess; // đã áp sát
     }
 }
-
-// PATROL bằng NavMeshAgent
 public class Patrol : btNode
 {
     private NavMeshAgent agent;
     private Transform[] points;
+
+    private Animator animator;
+    private string walkAnim;
+    private string idleAnim;
+    private int animLayer;
+
     private int index = -1;
     private bool started = false;
 
-    public Patrol(NavMeshAgent agent, Transform[] points)
+    // ---- Tùy chọn chống "chớp" ----
+    private float arriveSpeedThreshold = 0.05f; // tốc độ gần như đứng yên mới coi là tới
+    private float hysteresisTime = 0.05f;       // cần đứng yên ít khung hình (chống jitter)
+    private float arrivedStillTime = 0f;
+
+    // ---- (Tùy chọn) dừng/Idle ngẫu nhiên tại waypoint ----
+    private bool pauseAtWaypoint = false; // để mặc định false: không phát Idle ở góc
+    private float pauseMin = 0.8f, pauseMax = 1.8f;
+    private float pauseEndTime = 0f;
+    private bool isPaused = false;
+
+    public Patrol(
+        NavMeshAgent agent,
+        Transform[] points,
+        Animator animator,
+        string walkAnim = "Walk",
+        string idleAnim = "Idle",
+        int animLayer = 0,
+        bool pauseAtWaypoint = false,      // ← bật nếu bạn muốn dừng
+        float pauseMin = 0.8f,
+        float pauseMax = 1.8f
+    )
     {
         this.agent = agent;
-        // Lọc null để tránh lỗi khi quên gán 1 waypoint
+        this.animator = animator;
+        this.walkAnim = walkAnim;
+        this.idleAnim = idleAnim;
+        this.animLayer = animLayer;
+
+        this.pauseAtWaypoint = pauseAtWaypoint;
+        this.pauseMin = Mathf.Max(0f, pauseMin);
+        this.pauseMax = Mathf.Max(this.pauseMin, pauseMax);
+
+        // Lọc null waypoint
         if (points != null)
         {
             var list = new System.Collections.Generic.List<Transform>();
@@ -159,16 +193,73 @@ public class Patrol : btNode
             index = 0;
             SetNext();
             started = true;
+            PlayIfNotCurrent(walkAnim);
             return StateNode.Running;
         }
 
-        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        // Đang pause tại waypoint?
+        if (isPaused)
         {
-            index = (index + 1) % points.Length;
-            SetNext();
+            if (Time.time >= pauseEndTime)
+            {
+                isPaused = false;
+                if (agent.isStopped) agent.isStopped = false;
+                NextPointAndGo();
+            }
+            return StateNode.Running;
         }
 
+        // Điều kiện coi là "đã đến" (có hysteresis chống nháy)
+        bool closeEnough = !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance;
+        if (closeEnough)
+        {
+            // nếu tốc độ nhỏ hơn ngưỡng trong một khoảng rất ngắn → thật sự tới
+            if (agent.velocity.sqrMagnitude < arriveSpeedThreshold * arriveSpeedThreshold)
+            {
+                arrivedStillTime += Time.deltaTime;
+                if (arrivedStillTime >= hysteresisTime)
+                {
+                    if (pauseAtWaypoint)
+                    {
+                        // Pause: dừng và Idle
+                        isPaused = true;
+                        pauseEndTime = Time.time + Random.Range(pauseMin, pauseMax);
+                        if (!agent.isStopped) agent.isStopped = true;
+                        PlayIfNotCurrent(idleAnim);
+                        return StateNode.Running;
+                    }
+                    else
+                    {
+                        // Không pause: chuyển waypoint ngay, KHÔNG phát Idle để tránh nháy
+                        NextPointAndGo();
+                        return StateNode.Running;
+                    }
+                }
+            }
+            else
+            {
+                // còn đang quay/nhích → reset bộ đếm
+                arrivedStillTime = 0f;
+            }
+        }
+        else
+        {
+            arrivedStillTime = 0f;
+        }
+
+        // Đang di chuyển → giữ Walk
+        if (agent.velocity.sqrMagnitude > 0.01f)
+            PlayIfNotCurrent(walkAnim);
+
         return StateNode.Running;
+    }
+
+    private void NextPointAndGo()
+    {
+        index = (index + 1) % points.Length;
+        SetNext();
+        if (agent.isStopped) agent.isStopped = false;
+        PlayIfNotCurrent(walkAnim);
     }
 
     private void SetNext()
@@ -177,7 +268,18 @@ public class Patrol : btNode
         if (NavMesh.SamplePosition(target, out var hit, 2.0f, NavMesh.AllAreas))
             agent.SetDestination(hit.position);
     }
+
+    private void PlayIfNotCurrent(string stateName)
+    {
+        if (animator == null || string.IsNullOrEmpty(stateName)) return;
+
+        var st = animator.GetCurrentAnimatorStateInfo(animLayer);
+        if (!st.IsName(stateName))
+            animator.Play(stateName, animLayer, 0f);
+    }
 }
+
+
 public class CloseToPlayer : btNode
 {
     private Transform ai;
