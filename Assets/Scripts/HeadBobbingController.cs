@@ -4,8 +4,8 @@ public class HeadBobbingController : MonoBehaviour
 {
     [SerializeField] private bool _enabled = true; // Biến để kiểm soát trạng thái của Head Bobbinb
 
-    [SerializeField, Range(0, 0.1f)] float _amplitude = 0.03f; // Biên độ của Head Bobbing
-    [SerializeField, Range(0, 30f)] float _frequency = 8f; // Tần số của Head Bobbing
+    [SerializeField, Range(0, 0.1f)] float _amplitude = 0.15f; // Biên độ của Head Bobbing
+    [SerializeField, Range(0, 30f)] float _frequency = 10f; // Tần số của Head Bobbing
 
     [SerializeField] private Transform _cameraTransform = null; // Biến để tham chiếu đến Transform của Camera
     [SerializeField] private Transform _cameraHodler = null; // Biến để tham chiếu đến Transform của Camera Holder
