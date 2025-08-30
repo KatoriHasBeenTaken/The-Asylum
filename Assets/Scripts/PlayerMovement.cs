@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovementHN : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float runSpeed = 8f;
@@ -60,13 +60,13 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(move * currentSpeed * Time.deltaTime);
 
         bool isMoving = move.sqrMagnitude > 0f;
-        animator.SetBool("isWalking", isMoving);
+        if (animator) animator.SetBool("isWalking", isMoving);
     }
-    
+
     void HandleHeadBob()
     {
         Vector3 velocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
-        if (velocity.magnitude > 0.1f) // Moving
+        if (velocity.magnitude > 0.1f)
         {
             bool isRunning = Input.GetKey(KeyCode.LeftShift);
             float frequency = isRunning ? runBobFrequency : walkBobFrequency;
@@ -74,16 +74,13 @@ public class PlayerMovement : MonoBehaviour
 
             bobTimer += Time.deltaTime * frequency;
 
-            // Up and down bob
             float bobOffsetY = Mathf.Sin(bobTimer) * amplitude;
-
-            // Left and right sway (phase-shifted so it feels natural)
-            float swayAmplitude = amplitude * 3f; // Smaller than Y bob
+            float swayAmplitude = amplitude * 3f;
             float bobOffsetX = Mathf.Cos(bobTimer * 0.5f) * swayAmplitude;
 
             cameraTransform.localPosition = cameraInitialPosition + new Vector3(bobOffsetX, bobOffsetY, 0);
         }
-        else // Idle
+        else
         {
             bobTimer = 0;
             cameraTransform.localPosition = Vector3.Lerp(
