@@ -9,8 +9,9 @@ public class gamemaneger : MonoBehaviour
     [SerializeField] private Transform pieacePrefab;
     private List<Transform> pieces;
     private int emptylocation;
-    private int size;
+    public int size;
     private bool shuffling = false;
+    private int count = 0;
     private void creatGamePice(float gapThickness)
     {
         float width = 1/(float)size;
@@ -50,7 +51,7 @@ public class gamemaneger : MonoBehaviour
     void Start()
     {
         pieces = new List<Transform> ();
-        size = 3;
+        
         creatGamePice(0.01f);
     }
 
@@ -59,14 +60,31 @@ public class gamemaneger : MonoBehaviour
     {
         if(!shuffling && checkcompletion())
         {
-            shuffling = true;
-            StartCoroutine(WaitShuffle(0.5f));
+            if (count == 0)
+            {
+                shuffling = true;
+                count = 1;
+                StartCoroutine(WaitShuffle(0.5f));
+
+            }
+            else
+            {
+                Debug.Log("complet");
+            }
         }
         if (Input.GetMouseButton(0))
         {
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition),Vector2.zero);
-            if (hit)
+            RaycastHit hit;
+            Ray ray = new Ray(Camera.main.transform.position,Camera.main.transform.forward);
+            if(Physics.Raycast(ray, out hit,3f))
+
+           // RaycastHit2D hit = Physics2D.Raycast(Camera.main.transform.position, Camera.main.transform.forward);
+           // if (hit)
             {
+                if(hit.collider.tag == "art")
+                {
+                    Debug.Log("hitttttttt");
+                }
                 for (int i = 0; i < pieces.Count; i++)
                 {
                     if (pieces[i] == hit.transform)
@@ -81,6 +99,8 @@ public class gamemaneger : MonoBehaviour
             }
         }
     }
+
+
     private bool checkcompletion()
     {
         for (int i = 0; i < pieces.Count; i++)
