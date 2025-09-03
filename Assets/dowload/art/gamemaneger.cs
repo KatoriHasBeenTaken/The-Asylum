@@ -12,6 +12,7 @@ public class gamemaneger : MonoBehaviour
     public int size;
     private bool shuffling = false;
     private int count = 0;
+    public Door unlock;
     private void creatGamePice(float gapThickness)
     {
         float width = 1/(float)size;
@@ -69,6 +70,7 @@ public class gamemaneger : MonoBehaviour
             }
             else
             {
+                unlock.locks = false;
                 Debug.Log("complet");
             }
         }

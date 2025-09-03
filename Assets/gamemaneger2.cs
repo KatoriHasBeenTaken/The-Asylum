@@ -18,7 +18,7 @@ public class gamemaneger2 : MonoBehaviour
     public float piece6;
     public float piece7;
     public float piece8;
-
+    public Door unlock;
   
     private void creatGamePice(float gapThickness)
     {
@@ -80,7 +80,7 @@ public class gamemaneger2 : MonoBehaviour
         piece8 = pieces[8].transform.eulerAngles.z;
         if (checkcompletion())
         {
-            
+            unlock.locks = false;
                 Debug.Log("complet");
             
         }
