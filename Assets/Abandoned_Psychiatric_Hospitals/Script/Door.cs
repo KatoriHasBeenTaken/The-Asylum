@@ -10,10 +10,11 @@ public class Door : MonoBehaviour
     private Vector3 defaulRot;
     private Vector3 openRot;
     public Text txt;//text 
-    public bool locks =true;
+    public bool locks;
     // Start is called before the first frame update
     void Start()
     {
+        locks = true;
         defaulRot = transform.eulerAngles;
         openRot = new Vector3(defaulRot.x, defaulRot.y + DoorOpenAngle, defaulRot.z);
     }
