@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f763e45ac0414d544a2eccc35a4b3a28, type: 3}
   m_Name: Idle01
   m_EditorClassIdentifier: 
-  animationClip: {fileID: -203655887218126122, guid: 8dafd3628c778a74eb3f875e7de5d39e, type: 3}
-  weaponPrefab: {fileID: 5364621484756118317, guid: 4286784eafadf9f4ebfb6f725ab2da99, type: 3}
+  animationClip: {fileID: -5912145118209366543, guid: 0636141c91b6dcd4489c6b23b480083c,
+    type: 3}
+  weaponPrefab: {fileID: 5364621484756118317, guid: 4286784eafadf9f4ebfb6f725ab2da99,
+    type: 3}
   rotationvalues: {x: -159.79, y: -94.30099, z: -21.439}

@@ -1,14 +1,7 @@
 fileFormatVersion: 2
 guid: 18ba84fae8aeeee47af407034cda9b8d
-AssetOrigin:
-  serializedVersion: 1
-  productId: 226029
-  packageName: Skinless Zombie
-  packageVersion: 1.1.0
-  assetPath: Assets/Tensori/SkinlessZombie/Art/Mesh/fireaxe.fbx
-  uploadId: 518731
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 21202
   internalIDToNameTable:
   - first:
       74: 5504182870415770550
@@ -18,7 +11,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: TT_checker_512x512_UV_GRID
-    second: {fileID: 2100000, guid: 345f45ae6ce1b2c42b7fa4e6a14bdce6, type: 2}
+    second: {fileID: 2100000, guid: 393f33cc0361af64c9cc956e47ae18ba, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -31,6 +24,8 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 1
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -56,7 +51,6 @@ ModelImporter:
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
-    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
@@ -84,7 +78,6 @@ ModelImporter:
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -117,9 +110,14 @@ ModelImporter:
   humanoidOversampling: 1
   avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
-  importBlendShapeDeformPercent: 0
-  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 226029
+  packageName: Skinless Zombie
+  packageVersion: 1.1.0
+  assetPath: Assets/Tensori/SkinlessZombie/Art/Mesh/fireaxe.fbx
+  uploadId: 518731

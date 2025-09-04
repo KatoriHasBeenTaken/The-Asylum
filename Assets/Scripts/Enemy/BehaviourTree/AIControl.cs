@@ -25,7 +25,7 @@ public class AIControl : MonoBehaviour
     {
         var checkPlayer = new CheckPlayerInRange(transform, player, detectRange);
         var chase = new ChasePlayer(agent, player, anim, "Run");
-        var patrol = new Patrol(agent, patrolPoints);
+        var patrol = new Patrol(agent, patrolPoints, anim, "Walk", "Idle", 0, pauseAtWaypoint: true, 0.8f, 1.8f);
         var closeToPlayer = new CloseToPlayer(transform, player, 1.5f);
         var jumpscare = new Jumpscare(
             GetComponent<Animator>(),
