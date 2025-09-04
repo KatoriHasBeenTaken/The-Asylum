@@ -7,9 +7,6 @@ public class HeadBobbingController : MonoBehaviour
     [SerializeField, Range(0, 0.1f)] float _amplitude = 0.15f; // Biên độ của Head Bobbing
     [SerializeField, Range(0, 30f)] float _frequency = 10f; // Tần số của Head Bobbing
 
-    [SerializeField, Range(0, 0.1f)] float _amplitudeForRun = 0.01f;
-    [SerializeField, Range(0, 30f)] float _frequenceForRun = 12f;
-
     [SerializeField] private Transform _cameraTransform = null; // Biến để tham chiếu đến Transform của Camera
     [SerializeField] private Transform _cameraHodler = null; // Biến để tham chiếu đến Transform của Camera Holder
 
@@ -47,13 +44,9 @@ public class HeadBobbingController : MonoBehaviour
     }
     private Vector3 FootStepMotion()
     {
-        float speed = new Vector3(_controller.velocity.x, 0, _controller.velocity.z).magnitude;
-        bool isRunning = speed >= 5;
-        float currentAplitude = isRunning ? _amplitudeForRun : _amplitude;
-        float currentFrequecy = isRunning ? _frequenceForRun : _frequency;
         Vector3 pos = Vector3.zero;
-        pos.y += Mathf.Sin(Time.time * currentFrequecy) * currentAplitude;
-        pos.x += Mathf.Cos(Time.time * currentFrequecy * 0.5f) * currentAplitude * 2;
+        pos.y += Mathf.Sin(Time.time * _frequency) * _amplitude;
+        pos.x += Mathf.Cos(Time.time * _frequency * 0.5f) * _amplitude * 2;
         return pos;
     }
     private void ResetPosition()
