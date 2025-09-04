@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Runtime.InteropServices.WindowsRuntime;
-using UniGLTF.SpringBoneJobs;
+
 using UnityEngine;
 using UnityEngine.AI;
 
